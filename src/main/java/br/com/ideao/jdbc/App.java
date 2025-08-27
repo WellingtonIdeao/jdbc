@@ -1,5 +1,6 @@
 package br.com.ideao.jdbc;
 
+import br.com.ideao.jdbc.service.SupplierTable;
 import br.com.ideao.jdbc.util.JdbcUtil;
 
 import java.sql.Connection;
@@ -9,6 +10,8 @@ public class App {
     public static void main(String[] args) {
        try (Connection con = JdbcUtil.getConnection()) {
            System.out.println("Connected to database");
+           SupplierTable st = new SupplierTable(con);
+           st.createTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);
        }
