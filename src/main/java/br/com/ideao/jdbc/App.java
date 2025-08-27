@@ -1,7 +1,17 @@
 package br.com.ideao.jdbc;
 
+import br.com.ideao.jdbc.util.JdbcUtil;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World");
+       try (Connection con = JdbcUtil.getConnection()) {
+           System.out.println("Connected to database");
+       } catch (SQLException e) {
+           throw new RuntimeException(e);
+       }
+        System.out.println("Disconnected to database");
     }
 }
