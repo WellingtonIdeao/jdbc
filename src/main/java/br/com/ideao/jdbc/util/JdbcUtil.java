@@ -1,15 +1,28 @@
 package br.com.ideao.jdbc.util;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JdbcUtil {
-    private static final String user = "root";
-    private static final String pass = "password";
-    private static final String jdbcUrl = "jdbc:mysql://localhost:3306/test";
+    private static final HikariDataSource dataSource;
+
+    static {
+        HikariConfig config = new HikariConfig("/hikari.properties");
+        dataSource = new HikariDataSource(config);
+    }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(jdbcUrl, user, pass);
+        return dataSource.getConnection();
+    }
+
+    public static void dataSourceClose() {
+        dataSource.close();
+    }
+
+    public static boolean dataSourceIsClosed() {
+       return dataSource.isClosed();
     }
 }

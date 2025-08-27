@@ -12,6 +12,10 @@ public class App {
        } catch (SQLException e) {
            throw new RuntimeException(e);
        }
-        System.out.println("Disconnected to database");
+
+       if(!JdbcUtil.dataSourceIsClosed()) {
+           JdbcUtil.dataSourceClose();
+       }
+       System.out.println("Disconnected to database");
     }
 }
