@@ -1,5 +1,6 @@
 package br.com.ideao.jdbc;
 
+import br.com.ideao.jdbc.service.CoffeeTable;
 import br.com.ideao.jdbc.service.SupplierTable;
 import br.com.ideao.jdbc.util.JdbcUtil;
 
@@ -11,7 +12,9 @@ public class App {
        try (Connection con = JdbcUtil.getConnection()) {
            System.out.println("Connected to database");
            SupplierTable st = new SupplierTable(con);
+           CoffeeTable ct = new CoffeeTable(con);
            st.createTable();
+           ct.createTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);
        }
