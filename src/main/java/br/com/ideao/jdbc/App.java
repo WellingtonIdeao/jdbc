@@ -13,8 +13,12 @@ public class App {
            System.out.println("Connected to database");
            SupplierTable st = new SupplierTable(con);
            CoffeeTable ct = new CoffeeTable(con);
+
            st.createTable();
            ct.createTable();
+
+           st.populateTable();
+           ct.populateTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);
        }

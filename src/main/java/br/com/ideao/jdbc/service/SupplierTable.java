@@ -25,4 +25,15 @@ public class SupplierTable {
            stmt.executeUpdate(query);
         }
     }
+
+    public void populateTable() throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate("INSERT INTO supplier " +
+                    "VALUES (49, 'Superior Coffee', '1 Party Place', 'Mendocino', 'CA', '95460')");
+            stmt.executeUpdate("INSERT INTO supplier " +
+                    "VALUES (101, 'Acme, Inc.', '99 Market Street', 'Groundsville', 'CA', '95199')");
+            stmt.executeUpdate("INSERT INTO supplier " +
+                    "VALUES (150, 'The High Ground', '100 Coffee Lane', 'Meadows', 'CA', '93966')");
+        }
+    }
 }
