@@ -17,8 +17,9 @@ public class App {
            st.createTable();
            ct.createTable();
 
-           st.populateTable();
-           ct.populateTable();
+//           st.populateTable();
+//           ct.populateTable();
+           ct.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);
        }

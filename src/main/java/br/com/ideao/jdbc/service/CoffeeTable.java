@@ -1,6 +1,7 @@
 package br.com.ideao.jdbc.service;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -37,6 +38,22 @@ public class CoffeeTable {
                    "VALUES ('Colombian_Decaf', 101, 8.99, 0, 0)");
            stmt.executeUpdate("INSERT INTO coffee " +
                    "VALUES ('French_Roast_Decaf', 49, 9.99, 0, 0)");
+        }
+    }
+
+    public void viewTable() throws SQLException {
+        String query = "SELECT cof_name, sup_id, price, sales, total FROM coffee";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+           while(rs.next()) {
+              String coffeeName = rs.getString("cof_name");
+              int supplierID = rs.getInt("sup_id");
+              float price =  rs.getFloat("price");
+              int sales = rs.getInt("sales");
+              int total = rs.getInt("total");
+
+              System.out.println(coffeeName + ", " + supplierID + ", " + price + ", " + sales + ", " +total);
+           }
         }
     }
 }
