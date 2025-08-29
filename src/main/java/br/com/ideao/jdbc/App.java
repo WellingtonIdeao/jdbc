@@ -6,6 +6,8 @@ import br.com.ideao.jdbc.util.JdbcUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class App {
     public static void main(String[] args) {
@@ -13,6 +15,10 @@ public class App {
            System.out.println("Connected to database");
            SupplierTable st = new SupplierTable(con);
            CoffeeTable ct = new CoffeeTable(con);
+
+           HashMap<String, Integer> salesForWeek = new LinkedHashMap<>();
+           salesForWeek.put("Amaretto", 15);
+
 
            st.createTable();
            ct.createTable();
@@ -23,6 +29,8 @@ public class App {
 //           ct.batchUpdate();
 //           ct.parameterizedBatchUpdate();
 //           ct.insertRow("kona", 49, 15.99f, 0, 0);
+//            ct.updateCoffeeSales(salesForWeek);
+//           ct.updateCoffeeSalesWithStatement(salesForWeek);
            ct.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);

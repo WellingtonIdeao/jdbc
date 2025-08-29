@@ -1,6 +1,8 @@
 package br.com.ideao.jdbc.service;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CoffeeTable {
     private Connection connection;
@@ -126,6 +128,72 @@ public class CoffeeTable {
 
            uprs.insertRow();
            uprs.beforeFirst();
+        }
+    }
+
+    public void updateCoffeeSales(HashMap<String, Integer> salesForWeek) throws SQLException {
+        String updateSalesSql = "UPDATE coffee SET sales = ? WHERE cof_name = ?";
+        String updateSTotalSql = "UPDATE coffee SET total = total + ? WHERE cof_name = ?";
+
+        try (PreparedStatement updateSales = connection.prepareStatement(updateSalesSql);
+             PreparedStatement updateTotal = connection.prepareStatement(updateSTotalSql)) {
+
+            connection.setAutoCommit(false);
+
+            for (Map.Entry<String, Integer> e : salesForWeek.entrySet()) {
+                updateSales.setInt(1, e.getValue());
+                updateSales.setString(2, e.getKey());
+                updateSales.executeUpdate();
+
+                updateTotal.setInt(1, e.getValue());
+                updateTotal.setString(2, e.getKey());
+                updateTotal.executeUpdate();
+
+                connection.commit();
+            }
+        } catch (SQLException e) {
+            if(connection != null) {
+               try  {
+                   System.err.print("Transaction is being rolled back");
+                   connection.rollback();
+               } catch (SQLException ex) {
+                   throw new RuntimeException(ex);
+               }
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if(connection != null) {
+                connection.setAutoCommit(true);
+            }
+        }
+    }
+
+    public void updateCoffeeSalesWithStatement(HashMap<String, Integer> salesForWeek) throws SQLException {
+        try (Statement updateSales = connection.createStatement();
+             Statement updateTotal = connection.createStatement()) {
+           connection.setAutoCommit(false);
+           for (Map.Entry<String, Integer> e: salesForWeek.entrySet()) {
+               updateSales.executeUpdate("UPDATE coffee SET sales = " + e.getValue() +
+                       " WHERE cof_name = '" + e.getKey() + "'");
+               updateTotal.executeUpdate("UPDATE coffee SET total = total + " + e.getValue() +
+                       " WHERE cof_name = '" + e.getKey() + "'");
+
+               connection.commit();
+           }
+        } catch (SQLException e) {
+            if(connection != null) {
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            throw new RuntimeException(e);
+        } finally {
+            if(connection != null) {
+                connection.setAutoCommit(true);
+            }
         }
     }
 }
