@@ -21,7 +21,8 @@ public class App {
 //           ct.populateTable();
 //           ct.modifyPrices(1.10f);
 //           ct.batchUpdate();
-           ct.parameterizedBatchUpdate();
+//           ct.parameterizedBatchUpdate();
+//           ct.insertRow("kona", 49, 15.99f, 0, 0);
            ct.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);

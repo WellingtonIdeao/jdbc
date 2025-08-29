@@ -112,4 +112,20 @@ public class CoffeeTable {
             connection.setAutoCommit(true);
         }
     }
+
+    public void insertRow(String coffeeName, int supplierID,  float price,
+                          int sales, int total) throws SQLException {
+        try (Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet uprs = stmt.executeQuery("SELECT * FROM coffee")) {
+           uprs.moveToInsertRow();
+           uprs.updateString("cof_name", coffeeName);
+           uprs.updateInt("sup_id", supplierID);
+           uprs.updateFloat("price", price);
+           uprs.updateInt("sales", sales);
+           uprs.updateInt("total", total);
+
+           uprs.insertRow();
+           uprs.beforeFirst();
+        }
+    }
 }
