@@ -19,6 +19,7 @@ public class App {
 
 //           st.populateTable();
 //           ct.populateTable();
+//           ct.modifyPrices(1.10f);
            ct.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);

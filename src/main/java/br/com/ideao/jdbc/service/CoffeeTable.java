@@ -56,4 +56,15 @@ public class CoffeeTable {
            }
         }
     }
+
+    public void modifyPrices(float percentage) throws SQLException {
+        try (Statement stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+             ResultSet uprs = stmt.executeQuery("SELECT * FROM coffee")) {
+            while(uprs.next()) {
+               float f = uprs.getFloat("price");
+               uprs.updateFloat("price", f * percentage);
+               uprs.updateRow();
+           }
+        }
+    }
 }
