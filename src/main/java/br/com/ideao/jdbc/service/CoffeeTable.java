@@ -1,9 +1,6 @@
 package br.com.ideao.jdbc.service;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class CoffeeTable {
     private Connection connection;
@@ -65,6 +62,54 @@ public class CoffeeTable {
                uprs.updateFloat("price", f * percentage);
                uprs.updateRow();
            }
+        }
+    }
+
+    public void batchUpdate() throws SQLException {
+        connection.setAutoCommit(false);
+        try (Statement stmt = connection.createStatement()) {
+            stmt.addBatch("INSERT INTO coffee " +
+                    "VALUES('Amaretto', 49, 9.99, 0, 0)");
+            stmt.addBatch("INSERT INTO coffee " +
+                    "VALUES('Hazelnut', 49, 9.99, 0, 0)");
+            stmt.addBatch("INSERT INTO coffee " +
+                    "VALUES('Amaretto_decaf', 49, 10.99, 0, 0)");
+            stmt.addBatch("INSERT INTO coffee " +
+                    "VALUES('Hazelnut_decaf', 49, 10.99, 0, 0)");
+
+            int[] updateCounts = stmt.executeBatch();
+            connection.commit();
+        } catch (BatchUpdateException b) {
+            throw new RuntimeException(b);
+        } finally {
+            connection.setAutoCommit(true);
+        }
+    }
+
+    public void parameterizedBatchUpdate() throws SQLException {
+        connection.setAutoCommit(false);
+        String sql = "INSERT INTO coffee VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, "Amaretto");
+            pstmt.setInt(2, 49);
+            pstmt.setFloat(3, 9.99f);
+            pstmt.setInt(4, 0);
+            pstmt.setInt(5, 0);
+            pstmt.addBatch();
+
+            pstmt.setString(1, "Hazelnut");
+            pstmt.setInt(2, 49);
+            pstmt.setFloat(3, 9.99f);
+            pstmt.setInt(4, 0);
+            pstmt.setInt(5, 0);
+            pstmt.addBatch();
+
+            int[] updateCounts = pstmt.executeBatch();
+            connection.commit();
+        } catch (BatchUpdateException b) {
+            throw new RuntimeException(b);
+        } finally {
+            connection.setAutoCommit(true);
         }
     }
 }
