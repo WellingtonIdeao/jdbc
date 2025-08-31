@@ -29,10 +29,11 @@ public class App {
 //           ct.batchUpdate();
 //           ct.parameterizedBatchUpdate();
 //           ct.insertRow("kona", 49, 15.99f, 0, 0);
-//            ct.updateCoffeeSales(salesForWeek);
+//           ct.updateCoffeeSales(salesForWeek);
 //           ct.updateCoffeeSalesWithStatement(salesForWeek);
-           ct.viewTableByNameSqlInjection("' or '1'='1");
+//           ct.viewTableByNameSqlInjection("' or '1'='1");
 //           ct.viewTableByNameSqlInjection("dummy' or '1'='1");
+           ct.viewTableByNameSqlInjection("';DELETE FROM coffee WHERE cof_name = 'dummy");
 //           ct.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);
