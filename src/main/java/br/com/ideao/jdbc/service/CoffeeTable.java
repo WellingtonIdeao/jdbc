@@ -196,4 +196,20 @@ public class CoffeeTable {
             }
         }
     }
+
+    public void viewTableByNameSqlInjection(String nameWithSqlInjection) throws SQLException {
+        String query = "SELECT * FROM coffee " +
+                "WHERE cof_name = '" + nameWithSqlInjection+"'";
+        try (Statement stmtVulnerable = connection.createStatement();
+             ResultSet rs = stmtVulnerable.executeQuery(query)){
+            while(rs.next()) {
+                String coffeeName = rs.getString(1);
+                int supplierID = rs.getInt(2);
+                float price = rs.getFloat(3);
+                int sales = rs.getInt(4);
+                int total = rs.getInt(5);
+                System.out.println(coffeeName + ", " + supplierID + ", " + price + ", " + sales + ", " + total);
+            }
+        }
+    }
 }
