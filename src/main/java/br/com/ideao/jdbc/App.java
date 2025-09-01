@@ -33,7 +33,8 @@ public class App {
 //           ct.updateCoffeeSalesWithStatement(salesForWeek);
 //           ct.viewTableByNameSqlInjection("' or '1'='1");
 //           ct.viewTableByNameSqlInjection("dummy' or '1'='1");
-           ct.viewTableByNameSqlInjection("';DELETE FROM coffee WHERE cof_name = 'dummy");
+//           ct.viewTableByNameSqlInjection("';DELETE FROM coffee WHERE cof_name = 'dummy");
+           ct.modifyPricesByPercentage("dummy", 2f, 30f);
 //           ct.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);

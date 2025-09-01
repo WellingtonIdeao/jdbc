@@ -212,4 +212,49 @@ public class CoffeeTable {
             }
         }
     }
+
+    public void modifyPricesByPercentage(String coffeeName, float priceModifier, float maximumPrice) throws SQLException {
+        connection.setAutoCommit(false);
+        String priceQuery = "SELECT cof_name, price FROM coffee WHERE cof_name = ?";
+        String updateQuery = "UPDATE coffee SET price = ? WHERE cof_name = ?";
+        ResultSet rs = null;
+        try (PreparedStatement getPrice = connection.prepareStatement(priceQuery);
+             PreparedStatement updatePrice = connection.prepareStatement(updateQuery)) {
+
+            Savepoint save = connection.setSavepoint();
+
+            getPrice.setString(1, coffeeName);
+            getPrice.execute();
+            rs = getPrice.getResultSet();
+            boolean rowExists = rs.next();
+
+            if(!rowExists) {
+                System.out.println("Could not find entry for coffee name " + coffeeName);
+            }else {
+                float oldPrice = rs.getFloat("price");
+                float newPrice = oldPrice + (oldPrice * priceModifier);
+                System.out.printf("Old price of %s is $%.2f%n", coffeeName, oldPrice);
+                System.out.printf("New price of %s is $%.2f%n", coffeeName, newPrice);
+
+                System.out.println("\nPerfoming update...\n");
+                updatePrice.setFloat(1, newPrice);
+                updatePrice.setString(2, coffeeName);
+                updatePrice.executeUpdate();
+                System.out.println("Coffee table after update: ");
+                this.viewTable();
+
+                if(newPrice > maximumPrice) {
+                    System.out.printf("\nThe new price, $%.2f, is greater than the maximum price, $%.2f. "+
+                                    "Rolling back the transaction...%n", newPrice, maximumPrice);
+                    connection.rollback(save);
+                    System.out.println("\nCoffee table after rollback:");
+                    this.viewTable();
+                    connection.rollback(save);
+                }
+                connection.commit();
+            }
+        } finally {
+            connection.setAutoCommit(true);
+        }
+    }
 }
