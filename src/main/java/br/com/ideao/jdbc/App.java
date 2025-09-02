@@ -38,6 +38,7 @@ public class App {
 //           ct.modifyPricesByPercentage("dummy", 2f, 30f);
 //           ct.viewTable();
            CoffeeTableJdbcRowSet ctJdbcRowset = new CoffeeTableJdbcRowSet();
+           ctJdbcRowset.insertRow("dummy", 49, 50f, 0, 0);
            ctJdbcRowset.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);

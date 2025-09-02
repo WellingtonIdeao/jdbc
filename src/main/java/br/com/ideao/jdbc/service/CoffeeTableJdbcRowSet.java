@@ -1,5 +1,6 @@
 package br.com.ideao.jdbc.service;
 
+import javax.sql.RowSet;
 import javax.sql.rowset.JdbcRowSet;
 import javax.sql.rowset.RowSetFactory;
 import javax.sql.rowset.RowSetProvider;
@@ -30,9 +31,7 @@ public class CoffeeTableJdbcRowSet {
 
     public void viewTable() throws SQLException {
         try (JdbcRowSet jdbcRs = rsFactory.createJdbcRowSet()) {
-            jdbcRs.setUrl(properties.getProperty("jdbcUrl"));
-            jdbcRs.setUsername(properties.getProperty("username"));
-            jdbcRs.setPassword(properties.getProperty("password"));
+            settingRowset(jdbcRs);
             jdbcRs.setCommand("SELECT * FROM coffee");
             jdbcRs.execute();
 
@@ -45,6 +44,34 @@ public class CoffeeTableJdbcRowSet {
 
                 System.out.println(coffeeName + ", " + supplierId +", " + price +", " + sales + ", " + total);
             }
+        }
+    }
+    public void insertRow(String coffeeName, int supplierId, float price, int sales, int total) throws SQLException {
+        try (JdbcRowSet uprs = rsFactory.createJdbcRowSet()) {
+            settingRowset(uprs);
+            uprs.setCommand("SELECT * FROM coffee");
+            uprs.execute();
+
+            uprs.moveToInsertRow();
+
+            uprs.updateString("cof_name", coffeeName);
+            uprs.updateInt("sup_id", supplierId);
+            uprs.updateFloat("price", price);
+            uprs.updateInt("sales", sales);
+            uprs.updateInt("total", total);
+
+            uprs.insertRow();
+            uprs.first();
+        }
+    }
+
+    private void settingRowset(RowSet rowSet) {
+        try {
+            rowSet.setUrl(properties.getProperty("jdbcUrl"));
+            rowSet.setUsername(properties.getProperty("username"));
+            rowSet.setPassword(properties.getProperty("password"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
