@@ -31,24 +31,15 @@ public class CoffeeTableJdbcRowSet {
 
     public void viewTable() throws SQLException {
         try (JdbcRowSet jdbcRs = rsFactory.createJdbcRowSet()) {
-            settingRowset(jdbcRs);
+            settingRowSet(jdbcRs);
             jdbcRs.setCommand("SELECT * FROM coffee");
             jdbcRs.execute();
-
-            while (jdbcRs.next()) {
-                String coffeeName = jdbcRs.getString("cof_name");
-                int supplierId = jdbcRs.getInt("sup_id");
-                float price = jdbcRs.getFloat("price");
-                int sales = jdbcRs.getInt("sales");
-                int total = jdbcRs.getInt("total");
-
-                System.out.println(coffeeName + ", " + supplierId +", " + price +", " + sales + ", " + total);
-            }
+            outputRowSet(jdbcRs);
         }
     }
     public void insertRow(String coffeeName, int supplierId, float price, int sales, int total) throws SQLException {
         try (JdbcRowSet uprs = rsFactory.createJdbcRowSet()) {
-            settingRowset(uprs);
+            settingRowSet(uprs);
             uprs.setCommand("SELECT * FROM coffee");
             uprs.execute();
 
@@ -61,17 +52,43 @@ public class CoffeeTableJdbcRowSet {
             uprs.updateInt("total", total);
 
             uprs.insertRow();
-            uprs.first();
+            uprs.beforeFirst();
         }
     }
 
-    private void settingRowset(RowSet rowSet) {
+    private void settingRowSet(RowSet rowSet) {
         try {
             rowSet.setUrl(properties.getProperty("jdbcUrl"));
             rowSet.setUsername(properties.getProperty("username"));
             rowSet.setPassword(properties.getProperty("password"));
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void outputRowSet(RowSet rowSet) throws SQLException {
+       rowSet.beforeFirst();
+       while (rowSet.next()) {
+           String coffeeName = rowSet.getString("cof_name");
+           int supplierId = rowSet.getInt("sup_id");
+           float price = rowSet.getFloat("price");
+           int sales = rowSet.getInt("sales");
+           int total = rowSet.getInt("total");
+
+           System.out.println(coffeeName + ", " + supplierId +", " + price +", " + sales + ", " + total);
+       }
+    }
+
+    public void modifyPrices(String coffeName, float price) throws SQLException {
+        try (JdbcRowSet uprs = rsFactory.createJdbcRowSet()) {
+           settingRowSet(uprs);
+           uprs.setCommand("SELECT * FROM coffee WHERE cof_name = ?");
+           uprs.setString(1, coffeName);
+           uprs.execute();
+           uprs.first();
+
+           uprs.updateFloat("price", price);
+           uprs.updateRow();
         }
     }
 }
