@@ -1,6 +1,7 @@
 package br.com.ideao.jdbc;
 
 import br.com.ideao.jdbc.service.CoffeeTable;
+import br.com.ideao.jdbc.service.CoffeeTableJdbcRowSet;
 import br.com.ideao.jdbc.service.SupplierTable;
 import br.com.ideao.jdbc.util.JdbcUtil;
 
@@ -34,8 +35,10 @@ public class App {
 //           ct.viewTableByNameSqlInjection("' or '1'='1");
 //           ct.viewTableByNameSqlInjection("dummy' or '1'='1");
 //           ct.viewTableByNameSqlInjection("';DELETE FROM coffee WHERE cof_name = 'dummy");
-           ct.modifyPricesByPercentage("dummy", 2f, 30f);
+//           ct.modifyPricesByPercentage("dummy", 2f, 30f);
 //           ct.viewTable();
+           CoffeeTableJdbcRowSet ctJdbcRowset = new CoffeeTableJdbcRowSet();
+           ctJdbcRowset.viewTable();
        } catch (SQLException e) {
            throw new RuntimeException(e);
        }
